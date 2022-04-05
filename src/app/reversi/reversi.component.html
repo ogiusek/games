@@ -1,0 +1,20 @@
+<div class="body">
+    <header *ngIf="showWinner">{{ finishText }}<br>biały ma {{ whiteBlocks }}<br> czarny ma {{ blackBlocks }}</header>
+    <section [ngStyle]="{}" (mouseup)="OnLoad()">
+        <div *ngFor="let horizontal of arrayOfBlocks; let i = index" [ngStyle]="{height: 100 / amountOfBlocks  + '%'}">
+            <h1 *ngFor="let vertical of horizontal; let j = index" [ngStyle]="{width: 100 / amountOfBlocks + '%', height: 100 + '%', color: GetColor(i,j), 'border-color': colorHasTurn == 'black' ? 'black':'gray'}" (click)="AddBlock(i, j)">⬤</h1>
+        </div>
+    </section>
+    <footer>
+        <div class="text">
+            <div class="left" [ngStyle]="{'background-color': colorHasTurn == 'black' ? 'gold':'black'}">
+                <h1>Player black</h1>
+                <h2>black has {{ blackBlocks }} points</h2>
+            </div>
+            <div class="right" [ngStyle]="{'background-color': colorHasTurn == 'white' ? 'gold':'black'}">
+                <h1>Player white</h1>
+                <h2>white has {{ whiteBlocks }} points</h2>
+            </div>
+        </div>
+    </footer>
+</div>

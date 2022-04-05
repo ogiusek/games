@@ -1,0 +1,19 @@
+body {
+    margin: 0px;
+}
+
+.apps {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+}
+
+.app {
+    display: flex;
+    flex-shrink: 1;
+    width: 45vw;
+    height: 80vh;
+}

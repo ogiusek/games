@@ -1,0 +1,20 @@
+<section>
+    <button class="aiButton" (click)="Ai(pucksAmount, 2)">Ai</button>
+    <div class="sticks">
+        <div class="stick">
+            <p *ngFor="let i of pucks[0]" [ngStyle]="{width: i * 30 + 'px', backgroundColor: GetBackgroundColor(i)}">{{ i }}</p>
+        </div>
+        <div class=" stick ">
+            <p *ngFor="let i of pucks[1]" [ngStyle]="{width: i * 30 + 'px', backgroundColor: GetBackgroundColor(i)}">{{ i }}</p>
+        </div>
+        <div class="stick ">
+            <p *ngFor="let i of pucks[2]" [ngStyle]="{width: i * 30 + 'px', backgroundColor: GetBackgroundColor(i)}">{{ i }}</p>
+        </div>
+    </div>
+    <div class="buttons ">
+        <button (click)="PlayerReplace(0) " [ngStyle]="{backgroundColor: replaceHelpValue==0 ? 'blue' : ''} "></button>
+        <button (click)="PlayerReplace(1) " [ngStyle]="{backgroundColor: replaceHelpValue==1 ? 'blue' : ''} "></button>
+        <button (click)="PlayerReplace(2) " [ngStyle]="{backgroundColor: replaceHelpValue==2 ? 'blue' : ''} "></button>
+    </div>
+</section>
+<!-- [ngClass]="{background: i>= 4}" [ngStyle]="{color: i >= 4 ? 'wheat' : 'red'}" {backgroundColor: GetColor()} -->
