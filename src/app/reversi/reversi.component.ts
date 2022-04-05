@@ -8,15 +8,17 @@ import { Component, OnInit } from '@angular/core';
 export class ReversiComponent implements OnInit {
   amountOfBlocks: number;
   arrayOfBlocks: string[][] = [];
-  altArrayOfBlocks: string[][] = [];
+  lastArrayOfBlocks: string[][] = [];
   colorHasTurn = 'black';
-  atlColorHasTurn: string = 'black';
+  lastColorHasTurn: string = 'black';
   moves: number[][] = [];
   blackBlocks = 0;
   whiteBlocks = 0;
   finishText = '';
   showWinner = false;
   changedTurn = false;
+  aiColor:string = 'null';
+  showQuestion = true;
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
@@ -24,6 +26,13 @@ export class ReversiComponent implements OnInit {
   }
   constructor(){
     this.amountOfBlocks = 8;
+  }
+  GetAi(ai:string){
+    this.showQuestion = false;
+    this.aiColor = ai;
+    if(ai == 'black'){
+      this.Ai();
+    }
   }
   AddSpace(){
     for (let i = 0; i < this.amountOfBlocks; i++) {
@@ -38,19 +47,21 @@ export class ReversiComponent implements OnInit {
     this.arrayOfBlocks[this.amountOfBlocks  / 2 - 1][this.amountOfBlocks  / 2] = 'black';
   }
   AddBlock(x:number, y:number){
-    this.moves = [];
-    if(this.CanAddBlock(x, y)){
-      this.changedTurn = false;
-      this.ReplaceBlocks(x, y);
-      this.arrayOfBlocks[x][y] = this.colorHasTurn;
-      if(this.colorHasTurn == 'black'){
-        this.colorHasTurn = 'white';
-      }else if(this.colorHasTurn == 'white'){
-        this.colorHasTurn = 'black';
+    if(!this.showQuestion){
+      this.moves = [];
+      if(this.CanAddBlock(x, y)){
+        this.changedTurn = false;
+        this.ReplaceBlocks(x, y);
+        this.arrayOfBlocks[x][y] = this.colorHasTurn;
+        if(this.colorHasTurn == 'black'){
+          this.colorHasTurn = 'white';
+        }else if(this.colorHasTurn == 'white'){
+          this.colorHasTurn = 'black';
+        }
       }
+      this.blackBlocks = this.CountBlocks('black');
+      this.whiteBlocks = this.CountBlocks('white');
     }
-    this.blackBlocks = this.CountBlocks('black');
-    this.whiteBlocks = this.CountBlocks('white');
   }
   CountBlocks(missingElement:string):number{
     let number = 0;
@@ -191,12 +202,12 @@ export class ReversiComponent implements OnInit {
   }
   GetColor(x:number, y:number){
     let didChanged = false;
-    if(this.arrayOfBlocks != this.altArrayOfBlocks || this.colorHasTurn != this.atlColorHasTurn){
-      this.atlColorHasTurn = this.colorHasTurn;
+    if(this.arrayOfBlocks != this.lastArrayOfBlocks || this.colorHasTurn != this.lastColorHasTurn){
+      this.lastColorHasTurn = this.colorHasTurn;
       // this.arrayOfBlocks = this.altArrayOfBlocks;
-      this.altArrayOfBlocks = [];
+      this.lastArrayOfBlocks = [];
       for (let index = 0; index < this.amountOfBlocks; index++) {
-        this.altArrayOfBlocks.push(this.arrayOfBlocks[index]);        
+        this.lastArrayOfBlocks.push(this.arrayOfBlocks[index]);        
       }
       didChanged = true;
     }
@@ -228,7 +239,13 @@ export class ReversiComponent implements OnInit {
           this.ShowWinner();
         }
       }
+      if(this.colorHasTurn == this.aiColor){
+        this.Ai();
+      }
     }, 1);
+  }
+  Ai(){
+    
   }
   ShowWinner(){
     if(this.changedTurn){
@@ -245,11 +262,6 @@ export class ReversiComponent implements OnInit {
     }
   }
   ChangeColor(){
-    // this.colorHasTurn == 'black' ? this.colorHasTurn = 'white':this.colorHasTurn = 'black';
-    if(this.colorHasTurn == 'black'){
-      this.colorHasTurn = 'white';
-    }else{
-      this.colorHasTurn = 'black';
-    }
+    this.colorHasTurn == 'black' ? this.colorHasTurn = 'white':this.colorHasTurn = 'black';
   }
 }

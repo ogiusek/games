@@ -8,8 +8,28 @@
     border-width: 1px;
 }
 
+.title {
+    display: flex;
+    background-color: black;
+    width: 20%;
+    height: 20%;
+    position: absolute;
+    align-self: center;
+    justify-content: center;
+}
+
+.title button {
+    margin-top: auto;
+    height: 50%;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: royalblue;
+    color: white;
+}
+
 header {
-    position: fixed;
+    position: absolute;
     font-size: x-large;
     color: white;
     align-self: center;

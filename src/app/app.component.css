@@ -9,11 +9,13 @@ body {
     align-items: center;
     flex-wrap: wrap;
     flex-shrink: 1;
+    background-color: rgb(10, 10, 30);
 }
 
 .app {
     display: flex;
     flex-shrink: 1;
-    width: 45vw;
-    height: 80vh;
+    width: 60vw;
+    height: 95vh;
+    margin-top: 5vh;
 }

@@ -1,4 +1,9 @@
 <div class="body">
+    <div class="title" *ngIf="showQuestion">
+        <button (click)="GetAi('')">Vs Player</button>
+        <button (click)="GetAi('black')">Vs Black</button>
+        <button (click)="GetAi('white')">Vs White</button>
+    </div>
     <header *ngIf="showWinner">{{ finishText }}<br>biały ma {{ whiteBlocks }}<br> czarny ma {{ blackBlocks }}</header>
     <section [ngStyle]="{}" (mouseup)="OnLoad()">
         <div *ngFor="let horizontal of arrayOfBlocks; let i = index" [ngStyle]="{height: 100 / amountOfBlocks  + '%'}">
