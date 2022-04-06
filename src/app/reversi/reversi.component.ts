@@ -18,7 +18,7 @@ export class ReversiComponent implements OnInit {
   showWinner = false;
   changedTurn = false;
   aiColor:string = 'null';
-  showQuestion = true;
+  showQuestion = false;
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
