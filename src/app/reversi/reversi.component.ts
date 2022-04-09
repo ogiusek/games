@@ -27,6 +27,21 @@ export class ReversiComponent implements OnInit {
   constructor(){
     this.amountOfBlocks = 8;
   }
+  reload(){
+    this.colorHasTurn = 'black';
+    this.blackBlocks = 2;
+    this.whiteBlocks = 2;
+    this.showWinner = false;
+    this.changedTurn = false;
+    this.showQuestion = false;
+    this.arrayOfBlocks = [];
+    this.moves = [];
+    this.colorsHistory = [];
+    this.movesHistory = [];
+    this.AddSpace();
+    this.CountBlocks('black');
+    this.CountBlocks('white');
+  }
   GetAi(ai:string){
     this.showQuestion = false;
     this.aiColor = ai;
