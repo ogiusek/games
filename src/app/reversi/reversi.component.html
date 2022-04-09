@@ -16,6 +16,9 @@
                 <h1>Player black</h1>
                 <h2>black has {{ blackBlocks }} points</h2>
             </div>
+            <div class="buttons">
+                <button (click)="MoveBack()">←</button>
+            </div>
             <div class="right" [ngStyle]="{'background-color': colorHasTurn == 'white' ? 'gold':'black'}">
                 <h1>Player white</h1>
                 <h2>white has {{ whiteBlocks }} points</h2>

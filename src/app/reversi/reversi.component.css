@@ -81,9 +81,22 @@ h1:hover {
     color: white;
 }
 
+.text .buttons {
+    width: 20%;
+}
+
+.text .buttons button {
+    border: none;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    color: black;
+    font-size: 5vw;
+}
+
 .text div {
     text-align: center;
-    width: 50%;
+    width: 40%;
     height: 100%;
     border: 1px solid black;
     transition: 1s;

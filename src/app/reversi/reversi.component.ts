@@ -8,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
 export class ReversiComponent implements OnInit {
   amountOfBlocks: number;
   arrayOfBlocks: string[][] = [];
-  lastArrayOfBlocks: string[][] = [];
+  movesHistory: string[][][] = [];
+  colorsHistory: string[] = [];
   colorHasTurn = 'black';
-  lastColorHasTurn: string = 'black';
   moves: number[][] = [];
   blackBlocks = 0;
   whiteBlocks = 0;
@@ -50,6 +50,8 @@ export class ReversiComponent implements OnInit {
     if(!this.showQuestion){
       this.moves = [];
       if(this.CanAddBlock(x, y)){
+        this.movesHistory.unshift(this.PushArray());
+        this.colorsHistory.unshift(this.colorHasTurn);
         this.changedTurn = false;
         this.ReplaceBlocks(x, y);
         this.arrayOfBlocks[x][y] = this.colorHasTurn;
@@ -58,7 +60,30 @@ export class ReversiComponent implements OnInit {
         }else if(this.colorHasTurn == 'white'){
           this.colorHasTurn = 'black';
         }
+        this.blackBlocks = this.CountBlocks('black');
+        this.whiteBlocks = this.CountBlocks('white');
       }
+    }
+  }
+  PushArray(): string[][]{
+    let array: string[][] = [];
+    for (let index = 0; index < this.arrayOfBlocks.length; index++) {
+      array.push([]);
+      const element = this.arrayOfBlocks[index];
+      for (let i = 0; i < element.length; i++) {
+        const secondElement = element[i];
+        array[index].push(secondElement);
+        
+      }
+    }
+    return array;
+  }
+  MoveBack(){
+    if(this.movesHistory.length > 0){
+      this.arrayOfBlocks = this.movesHistory[0];
+      this.movesHistory.shift();
+      this.colorHasTurn = this.colorsHistory[0];
+      this.colorsHistory.shift();
       this.blackBlocks = this.CountBlocks('black');
       this.whiteBlocks = this.CountBlocks('white');
     }
@@ -201,16 +226,6 @@ export class ReversiComponent implements OnInit {
     }
   }
   GetColor(x:number, y:number){
-    let didChanged = false;
-    if(this.arrayOfBlocks != this.lastArrayOfBlocks || this.colorHasTurn != this.lastColorHasTurn){
-      this.lastColorHasTurn = this.colorHasTurn;
-      // this.arrayOfBlocks = this.altArrayOfBlocks;
-      this.lastArrayOfBlocks = [];
-      for (let index = 0; index < this.amountOfBlocks; index++) {
-        this.lastArrayOfBlocks.push(this.arrayOfBlocks[index]);        
-      }
-      didChanged = true;
-    }
     if(this.arrayOfBlocks[x][y] == 'black'){
       return 'black';
     }
