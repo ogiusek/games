@@ -18,7 +18,7 @@ export class ReversiComponent implements OnInit {
   showWinner = false;
   changedTurn = false;
   aiColor:string = 'null';
-  showQuestion = false;
+  showQuestion = true;
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
@@ -33,7 +33,7 @@ export class ReversiComponent implements OnInit {
     this.whiteBlocks = 2;
     this.showWinner = false;
     this.changedTurn = false;
-    this.showQuestion = false;
+    this.showQuestion = true;
     this.arrayOfBlocks = [];
     this.moves = [];
     this.colorsHistory = [];
@@ -46,6 +46,8 @@ export class ReversiComponent implements OnInit {
     this.showQuestion = false;
     this.aiColor = ai;
     if(ai == 'black'){
+      this.movesHistory.push(this.arrayOfBlocks);
+      this.colorsHistory.push(this.colorHasTurn);
       this.Ai();
     }
   }
@@ -60,8 +62,10 @@ export class ReversiComponent implements OnInit {
     this.arrayOfBlocks[this.amountOfBlocks  / 2 - 1][this.amountOfBlocks  / 2 - 1] = 'white';
     this.arrayOfBlocks[this.amountOfBlocks  / 2][this.amountOfBlocks  / 2 - 1] = 'black';
     this.arrayOfBlocks[this.amountOfBlocks  / 2 - 1][this.amountOfBlocks  / 2] = 'black';
+    this.colorsHistory.unshift(this.colorHasTurn);
+    this.movesHistory.unshift(this.arrayOfBlocks);
   }
-  AddBlock(x:number, y:number){
+  AddBlock(x:number, y:number, ai:boolean = false){
     if(!this.showQuestion){
       this.moves = [];
       if(this.CanAddBlock(x, y)){
@@ -77,6 +81,9 @@ export class ReversiComponent implements OnInit {
         }
         this.blackBlocks = this.CountBlocks('black');
         this.whiteBlocks = this.CountBlocks('white');
+        if(!ai){
+          this.Ai();
+        }
       }
     }
   }
@@ -88,19 +95,22 @@ export class ReversiComponent implements OnInit {
       for (let i = 0; i < element.length; i++) {
         const secondElement = element[i];
         array[index].push(secondElement);
-        
       }
     }
     return array;
   }
-  MoveBack(){
-    if(this.movesHistory.length > 0){
+  MoveBack(ai:Boolean = false){
+    if(this.movesHistory.length > 1){
       this.arrayOfBlocks = this.movesHistory[0];
       this.movesHistory.shift();
       this.colorHasTurn = this.colorsHistory[0];
       this.colorsHistory.shift();
-      this.blackBlocks = this.CountBlocks('black');
-      this.whiteBlocks = this.CountBlocks('white');
+      if(this.aiColor == this.colorHasTurn && !ai){
+        this.MoveBack();
+      }else{
+        this.blackBlocks = this.CountBlocks('black');
+        this.whiteBlocks = this.CountBlocks('white');  
+      }
     }
   }
   CountBlocks(missingElement:string):number{
@@ -252,7 +262,7 @@ export class ReversiComponent implements OnInit {
     }
     return 'green';
   }
-  OnLoad(){
+  OnClick(){
     setTimeout(() => {
       let movesLength = this.moves.length;
       for (let index = 0; index < this.moves.length; index++) {
@@ -264,18 +274,38 @@ export class ReversiComponent implements OnInit {
         if(this.changedTurn == false){
           this.colorHasTurn == 'black' ? this.colorHasTurn = 'white' : this.colorHasTurn = 'black';
           this.changedTurn = true;
-          this.OnLoad();
+          this.OnClick();
         }else{
           this.ShowWinner();
         }
       }
       if(this.colorHasTurn == this.aiColor){
         this.Ai();
+        this.OnClick();
       }
     }, 1);
   }
   Ai(){
-    
+    setTimeout(() => {
+      if(this.aiColor == this.colorHasTurn){
+        let myBlocks = 0;
+        let moveIndex = 0;
+        const moves = this.moves;
+        const movesAmount = this.movesHistory.length;
+        for (let index = 0; index < moves.length; index++) {
+          this.AddBlock(moves[index][0], moves[index][1], true);
+          if(movesAmount < this.movesHistory.length){
+            let blocks = this.CountBlocks(this.aiColor);
+            this.MoveBack(true);
+            if(blocks > myBlocks){
+              myBlocks = blocks;
+              moveIndex = index;
+            }  
+          }
+        }
+        this.AddBlock(moves[moveIndex][0], moves[moveIndex][1], true);
+      }
+    }, 1);
   }
   ShowWinner(){
     if(this.changedTurn){
