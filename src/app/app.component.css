@@ -1,21 +1,29 @@
-body {
-    margin: 0px;
-}
-
-.apps {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    flex-shrink: 1;
-    background-color: rgb(10, 10, 30);
-}
-
-.app {
-    display: flex;
-    flex-shrink: 1;
-    width: 60vw;
-    height: 95vh;
-    margin-top: 5vh;
-}
+    body {
+        margin: 0px;
+    }
+    
+    .apps {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        flex-shrink: 1;
+        background-color: rgb(10, 10, 30);
+    }
+    
+    .app {
+        display: flex;
+        flex-shrink: 1;
+        width: 95vh;
+        height: 95vh;
+        margin-top: 5vh;
+    }
+    
+    @media all and (max-width: 100vh) {
+        .app {
+            width: 95vw;
+            height: 95vw;
+            margin-top: 5vw;
+        }
+    }
