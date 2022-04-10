@@ -252,7 +252,7 @@ export class ReversiComponent implements OnInit {
     }
     return 'green';
   }
-  OnLoad(){
+  OnClick(){
     setTimeout(() => {
       let movesLength = this.moves.length;
       for (let index = 0; index < this.moves.length; index++) {
@@ -264,13 +264,14 @@ export class ReversiComponent implements OnInit {
         if(this.changedTurn == false){
           this.colorHasTurn == 'black' ? this.colorHasTurn = 'white' : this.colorHasTurn = 'black';
           this.changedTurn = true;
-          this.OnLoad();
+          this.OnClick();
         }else{
           this.ShowWinner();
         }
       }
       if(this.colorHasTurn == this.aiColor){
         this.Ai();
+        this.OnClick();
       }
     }, 1);
   }
