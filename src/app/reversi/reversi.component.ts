@@ -19,6 +19,7 @@ export class ReversiComponent implements OnInit {
   changedTurn = false;
   aiColor:string = 'null';
   showQuestion = true;
+  aiMoveIndex = 0;
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
@@ -276,17 +277,48 @@ export class ReversiComponent implements OnInit {
     }, 1);
   }
   Ai(depth:number = 2): number{
-    let bestMoveScore = 0;
-    let bestMoveIndex = 0;
+    let numberToReturn = 0;
+    setTimeout(() => {
+      let bestMoveScore = 0;
+      let bestMoveIndex = 0;
+      if(depth == 0){
+        numberToReturn = this.AiBestPointMove();
+      }else{
+        const moves = this.moves;
+        for (let i = 0; i < moves.length; i++) {
+          this.AddBlock(moves[i][0], moves[i][1]);
+          setTimeout(() => {
+            for (let index = 0; index < this.moves.length; index++) {
+            
+            }
+            this.Ai(depth - 1);
+            let score = this.CountBlocks(this.aiColor);              
+          }, 1);
 
-    return bestMoveScore;
+        }
+        numberToReturn = bestMoveScore;
+      }
+    }, 1);
+    return numberToReturn;      
+  }
+  FindMoves(): number[][]{
+    let moves: number[][] = [];
+    for (let i = 0; i < this.amountOfBlocks; i++) {
+      for (let j = 0; j < this.amountOfBlocks; j++) {
+        if(this.CanAddBlock(i, j)){
+          moves.push([i, j]);
+        }
+      }
+    }
+    return moves;
   }
   AiBestPointMove(): number{
     let bestMoveScore = 0;
     let bestMoveIndex = 0;
-    for (let index = 0; index < this.moves.length; index++) {
+    let moves = this.FindMoves();
+    for (let index = 0; index < moves.length; index++) {
       let positionScore = this.CountBlocks(this.aiColor);
-      this.AddBlock(this.moves[index][0], this.moves[index][1]);
+      this.AddBlock(moves[index][0], moves[index][1]);
       let score = this.CountBlocks(this.aiColor);
       if(positionScore != score){
         this.MoveBack();
