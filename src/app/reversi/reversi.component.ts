@@ -233,9 +233,6 @@ export class ReversiComponent implements OnInit {
         }
         return false;
       }
-      if(find(this.moves, [x, y]) == false){
-        this.moves.push([x,y]);
-      }
       return true;
     }else{
       return false;
@@ -276,30 +273,31 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
-  Ai(depth:number = 2): number{
-    let numberToReturn = 0;
-    setTimeout(() => {
-      let bestMoveScore = 0;
-      let bestMoveIndex = 0;
-      if(depth == 0){
-        numberToReturn = this.AiBestPointMove();
-      }else{
-        const moves = this.moves;
-        for (let i = 0; i < moves.length; i++) {
-          this.AddBlock(moves[i][0], moves[i][1]);
-          setTimeout(() => {
-            for (let index = 0; index < this.moves.length; index++) {
-            
-            }
-            this.Ai(depth - 1);
-            let score = this.CountBlocks(this.aiColor);              
-          }, 1);
-
-        }
-        numberToReturn = bestMoveScore;
-      }
-    }, 1);
-    return numberToReturn;      
+  // Ai(depth:number = 2): number{
+  Ai(depth:number = 2){
+    let moveIndex = this.AiBestPointMove();
+    this.moves = this.FindMoves();
+    this.AddBlock(this.moves[moveIndex][0], this.moves[moveIndex][1]);
+    this.movesHistory.shift();
+    this.colorsHistory.shift();
+    // let numberToReturn = 0;
+    // let bestMoveScore = 0;
+    // let bestMoveIndex = 0;
+    // if(depth == 0){
+    //   numberToReturn = this.AiBestPointMove();
+    // }else{
+    //   const moves = this.FindMoves();
+    //   for (let i = 0; i < moves.length; i++) {
+    //     this.AddBlock(moves[i][0], moves[i][1]);
+    //     for (let index = 0; index < moves.length; index++) {
+          
+    //     }
+    //     this.Ai(depth - 1);
+    //     let score = this.CountBlocks(this.aiColor);
+    //   }
+    //   numberToReturn = bestMoveScore;
+    // }
+    // return numberToReturn;      
   }
   FindMoves(): number[][]{
     let moves: number[][] = [];
@@ -316,19 +314,17 @@ export class ReversiComponent implements OnInit {
     let bestMoveScore = 0;
     let bestMoveIndex = 0;
     let moves = this.FindMoves();
+    this.moves = moves;
     for (let index = 0; index < moves.length; index++) {
-      let positionScore = this.CountBlocks(this.aiColor);
       this.AddBlock(moves[index][0], moves[index][1]);
       let score = this.CountBlocks(this.aiColor);
-      if(positionScore != score){
-        this.MoveBack();
-        if(score > bestMoveScore){
-          bestMoveIndex = index;
-          bestMoveScore = score;
-        }
+      this.MoveBack();
+      if(score > bestMoveScore){
+        bestMoveIndex = index;
+        bestMoveScore = score;
       }
     }
-    return bestMoveScore;
+    return bestMoveIndex;
   }
   ShowWinner(){
     if(this.changedTurn){

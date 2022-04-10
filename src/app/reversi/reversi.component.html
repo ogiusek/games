@@ -1,11 +1,11 @@
-<div class="body">
+<div class="body" (mouseup)="OnClick()">
     <div class="title" *ngIf="showQuestion">
         <button (click)="GetAi('')">Vs Player</button>
         <button (click)="GetAi('black')">Vs Black</button>
         <button (click)="GetAi('white')">Vs White</button>
     </div>
     <header *ngIf="showWinner">{{ finishText }}<br>biały ma {{ whiteBlocks }}<br> czarny ma {{ blackBlocks }}</header>
-    <section [ngStyle]="{}" (mouseup)="OnClick()">
+    <section [ngStyle]="{}">
         <div *ngFor="let horizontal of arrayOfBlocks; let i = index" [ngStyle]="{height: 100 / amountOfBlocks  + '%'}">
             <h1 *ngFor="let vertical of horizontal; let j = index" [ngStyle]="{width: 100 / amountOfBlocks + '%', height: 100 + '%', color: GetColor(i,j), 'border-color': colorHasTurn == 'black' ? 'black':'gray'}" (click)="AddBlock(i, j)">⬤</h1>
         </div>
