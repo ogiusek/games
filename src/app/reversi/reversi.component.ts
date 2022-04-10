@@ -11,7 +11,6 @@ export class ReversiComponent implements OnInit {
   movesHistory: string[][][] = [];
   colorsHistory: string[] = [];
   colorHasTurn = 'black';
-  moves: number[][] = [];
   blackBlocks = 0;
   whiteBlocks = 0;
   finishText = '';
@@ -35,7 +34,6 @@ export class ReversiComponent implements OnInit {
     this.changedTurn = false;
     this.showQuestion = true;
     this.arrayOfBlocks = [];
-    this.moves = [];
     this.colorsHistory = [];
     this.movesHistory = [];
     this.AddSpace();
@@ -67,7 +65,6 @@ export class ReversiComponent implements OnInit {
   }
   AddBlock(x:number, y:number, ai:boolean = false){
     if(!this.showQuestion){
-      this.moves = [];
       if(this.CanAddBlock(x, y)){
         this.movesHistory.unshift(this.PushArray());
         this.colorsHistory.unshift(this.colorHasTurn);
@@ -242,9 +239,6 @@ export class ReversiComponent implements OnInit {
         }
         return false;
       }
-      if(find(this.moves, [x, y]) == false){
-        this.moves.push([x,y]);
-      }
       return true;
     }else{
       return false;
@@ -264,13 +258,8 @@ export class ReversiComponent implements OnInit {
   }
   OnClick(){
     setTimeout(() => {
-      let movesLength = this.moves.length;
-      for (let index = 0; index < this.moves.length; index++) {
-        if(this.arrayOfBlocks[this.moves[index][0]][this.moves[index][1]] != ''){
-          movesLength--;
-        }
-      }
-      if(movesLength == 0){
+      let moves = this.FindMoves();
+      if(moves.length == 0){
         if(this.changedTurn == false){
           this.colorHasTurn == 'black' ? this.colorHasTurn = 'white' : this.colorHasTurn = 'black';
           this.changedTurn = true;
@@ -285,12 +274,23 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
+  FindMoves(): number[][]{
+    let moves: number[][] = [];
+    for (let i = 0; i < this.amountOfBlocks; i++) {
+      for (let j = 0; j < this.amountOfBlocks; j++) {
+        if(this.CanAddBlock(i, j)){
+          moves.push([i, j]);
+        }
+      }
+    }
+    return moves;
+  }
   Ai(){
     setTimeout(() => {
       if(this.aiColor == this.colorHasTurn){
         let myBlocks = 0;
         let moveIndex = 0;
-        const moves = this.moves;
+        const moves = this.FindMoves();
         const movesAmount = this.movesHistory.length;
         for (let index = 0; index < moves.length; index++) {
           this.AddBlock(moves[index][0], moves[index][1], true);
