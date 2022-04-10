@@ -18,7 +18,7 @@ export class ReversiComponent implements OnInit {
   showWinner = false;
   changedTurn = false;
   aiColor:string = 'null';
-  showQuestion = false;
+  showQuestion = true;
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
@@ -33,7 +33,7 @@ export class ReversiComponent implements OnInit {
     this.whiteBlocks = 2;
     this.showWinner = false;
     this.changedTurn = false;
-    this.showQuestion = false;
+    this.showQuestion = true;
     this.arrayOfBlocks = [];
     this.moves = [];
     this.colorsHistory = [];
@@ -275,8 +275,28 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
-  Ai(){
-    
+  Ai(depth:number = 2): number{
+    let bestMoveScore = 0;
+    let bestMoveIndex = 0;
+
+    return bestMoveScore;
+  }
+  AiBestPointMove(): number{
+    let bestMoveScore = 0;
+    let bestMoveIndex = 0;
+    for (let index = 0; index < this.moves.length; index++) {
+      let positionScore = this.CountBlocks(this.aiColor);
+      this.AddBlock(this.moves[index][0], this.moves[index][1]);
+      let score = this.CountBlocks(this.aiColor);
+      if(positionScore != score){
+        this.MoveBack();
+        if(score > bestMoveScore){
+          bestMoveIndex = index;
+          bestMoveScore = score;
+        }
+      }
+    }
+    return bestMoveScore;
   }
   ShowWinner(){
     if(this.changedTurn){
