@@ -30,6 +30,7 @@ export class ReversiComponent implements OnInit {
   }
   reload(){
     this.colorHasTurn = 'black';
+    this.aiColor = '';
     this.blackBlocks = 2;
     this.whiteBlocks = 2;
     this.showWinner = false;
@@ -62,7 +63,7 @@ export class ReversiComponent implements OnInit {
     this.arrayOfBlocks[this.amountOfBlocks  / 2][this.amountOfBlocks  / 2 - 1] = 'black';
     this.arrayOfBlocks[this.amountOfBlocks  / 2 - 1][this.amountOfBlocks  / 2] = 'black';
   }
-  AddBlock(x:number, y:number){
+  AddBlock(x:number, y:number, ai:boolean = false){
     if(!this.showQuestion){
       this.moves = [];
       if(this.CanAddBlock(x, y)){
@@ -78,6 +79,9 @@ export class ReversiComponent implements OnInit {
         }
         this.blackBlocks = this.CountBlocks('black');
         this.whiteBlocks = this.CountBlocks('white');
+        if(ai && this.aiColor == this.colorHasTurn){
+          this.Ai();
+        }
       }
     }
   }
@@ -89,7 +93,6 @@ export class ReversiComponent implements OnInit {
       for (let i = 0; i < element.length; i++) {
         const secondElement = element[i];
         array[index].push(secondElement);
-        
       }
     }
     return array;
@@ -252,13 +255,7 @@ export class ReversiComponent implements OnInit {
   }
   OnClick(){
     setTimeout(() => {
-      let movesLength = this.moves.length;
-      for (let index = 0; index < this.moves.length; index++) {
-        if(this.arrayOfBlocks[this.moves[index][0]][this.moves[index][1]] != ''){
-          movesLength--;
-        }
-      }
-      if(movesLength == 0){
+      if(this.FindMoves().length == 0){
         if(this.changedTurn == false){
           this.colorHasTurn == 'black' ? this.colorHasTurn = 'white' : this.colorHasTurn = 'black';
           this.changedTurn = true;
@@ -273,31 +270,69 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
-  // Ai(depth:number = 2): number{
-  Ai(depth:number = 2){
-    let moveIndex = this.AiBestPointMove();
-    this.moves = this.FindMoves();
-    this.AddBlock(this.moves[moveIndex][0], this.moves[moveIndex][1]);
-    this.movesHistory.shift();
-    this.colorsHistory.shift();
-    // let numberToReturn = 0;
-    // let bestMoveScore = 0;
-    // let bestMoveIndex = 0;
-    // if(depth == 0){
-    //   numberToReturn = this.AiBestPointMove();
-    // }else{
-    //   const moves = this.FindMoves();
-    //   for (let i = 0; i < moves.length; i++) {
-    //     this.AddBlock(moves[i][0], moves[i][1]);
-    //     for (let index = 0; index < moves.length; index++) {
-          
-    //     }
-    //     this.Ai(depth - 1);
-    //     let score = this.CountBlocks(this.aiColor);
-    //   }
-    //   numberToReturn = bestMoveScore;
-    // }
-    // return numberToReturn;      
+  Ai(depth:number = 4){
+    if(this.colorHasTurn == this.aiColor && this.FindMoves().length > 0){
+      depth = depth;
+      let bestMoveScore = 0;
+      let bestMoveIndex = 0;
+      const moves = this.FindMoves();
+      // const position = [this.PushArray(), this.PushArray()];
+      this.moves = moves;
+      for (let index = 0; index < moves.length; index++) {
+        this.AddBlock(moves[index][0], moves[index][1]);
+        // if(this.movesHistory.length > 1){
+          // this.movesHistory.shift();
+          // this.colorsHistory.shift();  
+        // }
+        if(depth > 0){
+          this.AiPlayerMove(depth);
+        }
+        let score = this.CountBlocks(this.aiColor);
+        // for (let i = 0; i < depth * 2 + 0; i++) {
+          this.MoveBack();
+        // }
+        // this.arrayOfBlocks = this.movesHistory[0];
+        // this.colorHasTurn = this.colorsHistory[0];
+        // this.arrayOfBlocks = position[1];
+        if(score > bestMoveScore){
+          bestMoveIndex = index;
+          bestMoveScore = score;
+        }
+      }
+      this.AddBlock(moves[bestMoveIndex][0], moves[bestMoveIndex][1]);
+      this.movesHistory.shift();
+      this.colorsHistory.shift();
+    }
+  }
+  AiPlayerMove(depth: number){
+    if(this.colorHasTurn != this.aiColor && this.FindMoves().length > 0){
+      let worseMoveScore = this.amountOfBlocks * this.amountOfBlocks;
+      depth = depth;
+      let worseMoveIndex = 0;
+      const moves = this.FindMoves();
+      this.moves = moves;
+      // const position = [this.PushArray(), this.PushArray()];
+      for (let index = 0; index < moves.length; index++) {
+        this.AddBlock(moves[index][0], moves[index][1]);
+        if(depth > 0){
+          this.Ai(depth - 1);
+        }
+        let score = this.CountBlocks(this.aiColor);
+        // for (let i = 0; i < depth * 2 - 1; i++) {
+          this.MoveBack();
+        // }
+        // this.arrayOfBlocks = this.movesHistory[0];
+        // this.colorHasTurn = this.colorsHistory[0];
+        // this.arrayOfBlocks = position[1];
+        if(score < worseMoveScore){
+          worseMoveIndex = index;
+          worseMoveScore = score;
+        }
+      }
+      this.AddBlock(moves[worseMoveIndex][0], moves[worseMoveIndex][1]);
+      this.movesHistory.shift();
+      this.colorsHistory.shift();
+    }
   }
   FindMoves(): number[][]{
     let moves: number[][] = [];
@@ -309,22 +344,6 @@ export class ReversiComponent implements OnInit {
       }
     }
     return moves;
-  }
-  AiBestPointMove(): number{
-    let bestMoveScore = 0;
-    let bestMoveIndex = 0;
-    let moves = this.FindMoves();
-    this.moves = moves;
-    for (let index = 0; index < moves.length; index++) {
-      this.AddBlock(moves[index][0], moves[index][1]);
-      let score = this.CountBlocks(this.aiColor);
-      this.MoveBack();
-      if(score > bestMoveScore){
-        bestMoveIndex = index;
-        bestMoveScore = score;
-      }
-    }
-    return bestMoveIndex;
   }
   ShowWinner(){
     if(this.changedTurn){
