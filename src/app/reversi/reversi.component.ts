@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-reversi',
@@ -20,6 +20,8 @@ export class ReversiComponent implements OnInit {
   aiColor:string = 'null';
   showQuestion = true;
   aiMoveIndex = 0;
+  aiLevel = 2;
+  stringAiLevel = "";
   ngOnInit(): void {
     this.AddSpace();
     this.blackBlocks = this.CountBlocks('black');
@@ -270,7 +272,7 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
-  Ai(depth:number = 2){
+  Ai(depth:number = this.aiLevel){
     if(this.colorHasTurn == this.aiColor && this.FindMoves().length > 0){
       depth = depth;
       let bestMoveScore = 0;
@@ -328,6 +330,24 @@ export class ReversiComponent implements OnInit {
       }
     }
     return moves;
+  }
+  GetAiLevel(){
+    let levels = "0123";
+    if(this.stringAiLevel.length <= 1){
+      for (let i = 0; i < levels.length; i++) {
+        for (let j = 0; j < this.stringAiLevel.length; j++) {
+          if(levels[i] == this.stringAiLevel[j]){
+            this.aiLevel = Number(this.stringAiLevel);
+            return 0;
+          }
+        }
+      }
+      this.stringAiLevel = "";
+    }else{
+      this.stringAiLevel = this.stringAiLevel[this.stringAiLevel.length - 1];
+      this.GetAiLevel();
+    }
+    return 0;
   }
   ShowWinner(){
     if(this.changedTurn){

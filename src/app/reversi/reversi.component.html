@@ -1,8 +1,14 @@
 <div class="body" (mouseup)="OnClick()">
     <div class="title" *ngIf="showQuestion">
-        <button (click)="GetAi('')">Vs Player</button>
-        <button (click)="GetAi('black')">Vs Black</button>
-        <button (click)="GetAi('white')">Vs White</button>
+        <div class="buttons">
+            <button (click)="GetAi('')">Vs Player</button>
+            <button (click)="GetAi('black')">Vs Black</button>
+            <button (click)="GetAi('white')">Vs White</button>
+        </div>
+        <div class="aiLevel">
+            <p>Poziom ai od 0-2</p>
+            <input id="input" type="text" [(ngModel)]="stringAiLevel" (ngModelChange)="GetAiLevel()">
+        </div>
     </div>
     <header *ngIf="showWinner">{{ finishText }}<br>biały ma {{ whiteBlocks }}<br> czarny ma {{ blackBlocks }}</header>
     <section [ngStyle]="{}">
