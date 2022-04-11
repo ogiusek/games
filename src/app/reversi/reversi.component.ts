@@ -270,30 +270,20 @@ export class ReversiComponent implements OnInit {
       }
     }, 1);
   }
-  Ai(depth:number = 4){
+  Ai(depth:number = 2){
     if(this.colorHasTurn == this.aiColor && this.FindMoves().length > 0){
       depth = depth;
       let bestMoveScore = 0;
       let bestMoveIndex = 0;
       const moves = this.FindMoves();
-      // const position = [this.PushArray(), this.PushArray()];
       this.moves = moves;
       for (let index = 0; index < moves.length; index++) {
         this.AddBlock(moves[index][0], moves[index][1]);
-        // if(this.movesHistory.length > 1){
-          // this.movesHistory.shift();
-          // this.colorsHistory.shift();  
-        // }
         if(depth > 0){
           this.AiPlayerMove(depth);
         }
         let score = this.CountBlocks(this.aiColor);
-        // for (let i = 0; i < depth * 2 + 0; i++) {
-          this.MoveBack();
-        // }
-        // this.arrayOfBlocks = this.movesHistory[0];
-        // this.colorHasTurn = this.colorsHistory[0];
-        // this.arrayOfBlocks = position[1];
+        this.MoveBack();
         if(score > bestMoveScore){
           bestMoveIndex = index;
           bestMoveScore = score;
@@ -311,19 +301,13 @@ export class ReversiComponent implements OnInit {
       let worseMoveIndex = 0;
       const moves = this.FindMoves();
       this.moves = moves;
-      // const position = [this.PushArray(), this.PushArray()];
       for (let index = 0; index < moves.length; index++) {
         this.AddBlock(moves[index][0], moves[index][1]);
         if(depth > 0){
           this.Ai(depth - 1);
         }
         let score = this.CountBlocks(this.aiColor);
-        // for (let i = 0; i < depth * 2 - 1; i++) {
-          this.MoveBack();
-        // }
-        // this.arrayOfBlocks = this.movesHistory[0];
-        // this.colorHasTurn = this.colorsHistory[0];
-        // this.arrayOfBlocks = position[1];
+        this.MoveBack();
         if(score < worseMoveScore){
           worseMoveIndex = index;
           worseMoveScore = score;
